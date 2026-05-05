@@ -176,7 +176,7 @@ buildBoard();
 
 const countdown = () => {
     // Ustawiamy datę docelową (15 maja 2026, 20:00)
-    const targetDate = new Date('May 15, 2026 20:00:00').getTime();
+    const targetDate = new Date('May 23, 2026 20:00:00').getTime();
     
     const update = () => {
         const now = new Date().getTime();
