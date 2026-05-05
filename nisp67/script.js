@@ -214,3 +214,32 @@ const countdown = () => {
 
 // Czekamy na załadowanie DOM, żeby nie wywalić błędów
 document.addEventListener('DOMContentLoaded', countdown);
+
+/**
+ * MOBILE MENU LOGIC
+ */
+const initMobileMenu = () => {
+    const menu = document.querySelector('#mobile-menu');
+    const links = document.querySelector('.nav-links');
+    const navItems = document.querySelectorAll('.nav-links a');
+
+    // Toggle menu
+    menu.addEventListener('click', () => {
+        menu.classList.toggle('active');
+        links.classList.toggle('active');
+    });
+
+    // Zamknij menu po kliknięciu w dowolny link (scroll do sekcji)
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            menu.classList.remove('active');
+            links.classList.remove('active');
+        });
+    });
+};
+
+// Dodaj wywołanie w DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    countdown(); // Twoja poprzednia funkcja
+    initMobileMenu();
+});
