@@ -169,3 +169,48 @@ spinBtn.addEventListener('click', () => {
 // Start gry
 setupWheel();
 buildBoard();
+/**
+ * JUWENALIA 2026 - Countdown Engine
+ * Profesjonalna implementacja bez wycieków pamięci
+ */
+
+const countdown = () => {
+    // Ustawiamy datę docelową (15 maja 2026, 20:00)
+    const targetDate = new Date('May 15, 2026 20:00:00').getTime();
+    
+    const update = () => {
+        const now = new Date().getTime();
+        const gap = targetDate - now;
+
+        // Jeśli data minęła, czyścimy interwał
+        if (gap <= 0) {
+            document.getElementById('countdown').innerHTML = "<h3>ZACZYNAMY ZABAWĘ!</h3>";
+            clearInterval(timerInterval);
+            return;
+        }
+
+        // Magia matematyki (ms -> s -> m -> h -> d)
+        const second = 1000;
+        const minute = second * 60;
+        const hour = minute * 60;
+        const day = hour * 24;
+
+        const d = Math.floor(gap / day);
+        const h = Math.floor((gap % day) / hour);
+        const m = Math.floor((gap % hour) / minute);
+        const s = Math.floor((gap % minute) / second);
+
+        // Renderowanie z formatowaniem "00"
+        document.getElementById('days').innerText = d.toString().padStart(2, '0');
+        document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+        document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+        document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+    };
+
+    // Odpalamy raz od razu, żeby nie było widać "00" przez pierwszą sekundę
+    update();
+    const timerInterval = setInterval(update, 1000);
+};
+
+// Czekamy na załadowanie DOM, żeby nie wywalić błędów
+document.addEventListener('DOMContentLoaded', countdown);
