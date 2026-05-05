@@ -177,9 +177,12 @@ h2::after {
 }
 
 /* Pricing/Tickets */
-.pricing {
-    display: flex;
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 450px));
+    gap: 2rem;
     justify-content: center;
+    align-items: start;
 }
 
 .ticket-tier {
