@@ -1,59 +1,171 @@
 let balance = 1000;
+let currentBetType = null;
+let currentBetValue = null;
+let isSpinning = false;
+
 const wheel = document.getElementById('wheel');
+const innerWheel = document.querySelector('.inner-wheel');
 const resultMsg = document.getElementById('result-message');
 const balanceDisplay = document.getElementById('balance');
+const spinBtn = document.getElementById('spin-btn');
+const selectionDisplay = document.getElementById('current-selection');
+const boardContainer = document.getElementById('betting-board');
 
-function placeBet(chosenColor) {
+// Układ tarczy i czerwone numery
+const wheelOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+const redNumbers = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+const sliceAngle = 360 / 37;
+let currentRotation = 0;
+
+// GENEROWANIE TARCZY RULETKI
+function setupWheel() {
+    let gradientParts = [];
+    wheelOrder.forEach((num, index) => {
+        let color = num === 0 ? '#27ae60' : (redNumbers.includes(num) ? '#e74c3c' : '#2c3e50');
+        let startAngle = index * sliceAngle;
+        let endAngle = (index + 1) * sliceAngle;
+        gradientParts.push(`${color} ${startAngle}deg ${endAngle}deg`);
+    });
+    wheel.style.background = `conic-gradient(${gradientParts.join(', ')})`;
+}
+
+// GENEROWANIE PLANSZY DO OBSTAWIANIA
+function buildBoard() {
+    // Zero
+    let zeroBtn = document.createElement('button');
+    zeroBtn.className = 'bet-btn board-green zero-cell';
+    zeroBtn.innerText = '0';
+    zeroBtn.onclick = () => selectBet('number', 0, zeroBtn);
+    boardContainer.appendChild(zeroBtn);
+
+    // Numery 1-36 układane w 3 rzędach
+    const gridLayout = [
+        [3,6,9,12,15,18,21,24,27,30,33,36],
+        [2,5,8,11,14,17,20,23,26,29,32,35],
+        [1,4,7,10,13,16,19,22,25,28,31,34]
+    ];
+
+    gridLayout.forEach((row, rowIndex) => {
+        row.forEach((num, colIndex) => {
+            let btn = document.createElement('button');
+            let isRed = redNumbers.includes(num);
+            btn.className = `bet-btn ${isRed ? 'board-red' : 'board-black'}`;
+            btn.style.gridColumn = colIndex + 2;
+            btn.style.gridRow = rowIndex + 1;
+            btn.innerText = num;
+            btn.onclick = () => selectBet('number', num, btn);
+            boardContainer.appendChild(btn);
+        });
+    });
+
+    // Zakłady poboczne (Outside bets) w kontenerze
+    let outsideContainer = document.createElement('div');
+    outsideContainer.className = 'outside-bets';
+
+    const outsideOptions = [
+        { label: 'PARZYSTE (EVEN)', type: 'parity', val: 'even' },
+        { label: 'CZERWONE', type: 'color', val: 'red', extraClass: 'board-red' },
+        { label: 'CZARNE', type: 'color', val: 'black', extraClass: 'board-black' },
+        { label: 'NIEPARZYSTE (ODD)', type: 'parity', val: 'odd' }
+    ];
+
+    outsideOptions.forEach(opt => {
+        let btn = document.createElement('button');
+        btn.className = `bet-btn ${opt.extraClass || ''}`;
+        btn.innerText = opt.label;
+        btn.onclick = () => selectBet(opt.type, opt.val, btn);
+        outsideContainer.appendChild(btn);
+    });
+
+    boardContainer.appendChild(outsideContainer);
+}
+
+// WYBÓR ZAKŁADU
+function selectBet(type, value, element) {
+    if (isSpinning) return;
+    
+    // Usuń podświetlenie z innych przycisków
+    document.querySelectorAll('.bet-btn').forEach(btn => btn.classList.remove('selected'));
+    
+    // Zaznacz nowy
+    element.classList.add('selected');
+    currentBetType = type;
+    currentBetValue = value;
+    
+    selectionDisplay.innerText = `Zakład: ${type === 'number' ? 'Liczba ' + value : value.toUpperCase()}`;
+    spinBtn.disabled = false;
+}
+
+// LOGIKA KRĘCENIA
+spinBtn.addEventListener('click', () => {
     const betInput = document.getElementById('bet-amount');
     const bet = parseInt(betInput.value);
 
     if (bet > balance) {
-        resultMsg.innerText = "Nie masz tyle punktów!";
+        resultMsg.innerHTML = "<span class='lose'>Nie masz tyle punktów!</span>";
         return;
     }
 
-    // Blokada przycisków na czas kręcenia
-    document.querySelectorAll('.color-buttons button').forEach(b => b.disabled = true);
+    // Pobranie stawki i blokada
+    balance -= bet;
+    balanceDisplay.innerText = balance;
+    isSpinning = true;
+    spinBtn.disabled = true;
+    resultMsg.innerText = "Koło w ruchu...";
+    innerWheel.innerText = "?";
+
+    const targetIndex = Math.floor(Math.random() * 37);
+    const randomNumber = wheelOrder[targetIndex];
     
-    resultMsg.innerText = "Kręcimy...";
+    // Obliczanie animacji (identycznie jak w poprzedniej wersji)
+    const targetAngle = 360 - (targetIndex * sliceAngle + (sliceAngle / 2));
+    const extraSpins = 360 * 5; 
+    const currentModulo = currentRotation % 360;
+    const rotationToAdd = extraSpins + ((targetAngle - currentModulo + 360) % 360);
     
-    // Losowanie wyniku (0-36, jak w ruletce)
-    const randomNumber = Math.floor(Math.random() * 37);
-    let winningColor = '';
+    currentRotation += rotationToAdd;
+    wheel.style.transform = `rotate(${currentRotation}deg)`;
 
-    if (randomNumber === 0) {
-        winningColor = 'green';
-    } else if ([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(randomNumber)) {
-        winningColor = 'red';
-    } else {
-        winningColor = 'black';
-    }
-
-    // Animacja kręcenia (pełne obroty + losowy kąt)
-    const extraDegrees = 1800 + (Math.random() * 360);
-    wheel.style.transform = `rotate(${extraDegrees}deg)`;
-
+    // Rozstrzygnięcie po obrocie
     setTimeout(() => {
-        // Ustawienie koloru koła na wynikowy
-        if (winningColor === 'red') wheel.style.background = '#e74c3c';
-        else if (winningColor === 'black') wheel.style.background = '#2c3e50';
-        else wheel.style.background = '#27ae60';
+        innerWheel.innerText = randomNumber;
+        let isWin = false;
+        let payoutMultiplier = 0;
 
-        wheel.querySelector('.inner-wheel').innerText = randomNumber;
+        // Sprawdzanie warunków wygranej
+        if (currentBetType === 'number' && currentBetValue === randomNumber) {
+            isWin = true;
+            payoutMultiplier = 36; // Płaci 35:1 (stawka + 35)
+        } else if (currentBetType === 'color' && randomNumber !== 0) {
+            let isRed = redNumbers.includes(randomNumber);
+            if ((currentBetValue === 'red' && isRed) || (currentBetValue === 'black' && !isRed)) {
+                isWin = true;
+                payoutMultiplier = 2; // Płaci 1:1
+            }
+        } else if (currentBetType === 'parity' && randomNumber !== 0) {
+            let isEven = randomNumber % 2 === 0;
+            if ((currentBetValue === 'even' && isEven) || (currentBetValue === 'odd' && !isEven)) {
+                isWin = true;
+                payoutMultiplier = 2; // Płaci 1:1
+            }
+        }
 
-        if (chosenColor === winningColor) {
-            let winAmount = winningColor === 'green' ? bet * 14 : bet * 2;
+        if (isWin) {
+            let winAmount = bet * payoutMultiplier;
             balance += winAmount;
-            resultMsg.innerHTML = `<span class="win">WYGRAŁEŚ!</span> (+${winAmount})`;
+            resultMsg.innerHTML = `<span class="win">WYGRAŁEŚ! Wypadło: ${randomNumber}</span> (+${winAmount})`;
         } else {
-            balance -= bet;
-            resultMsg.innerHTML = `<span class="lose">PRZEGRAŁEŚ!</span> (-${bet})`;
+            resultMsg.innerHTML = `<span class="lose">PRZEGRAŁEŚ! Wypadło: ${randomNumber}</span>`;
         }
 
         balanceDisplay.innerText = balance;
-        document.querySelectorAll('.color-buttons button').forEach(b => b.disabled = false);
+        isSpinning = false;
         
-        // Reset rotacji po chwili (opcjonalne)
-        setTimeout(() => { wheel.style.transition = 'none'; wheel.style.transform = 'rotate(0deg)'; setTimeout(() => wheel.style.transition = 'transform 3s cubic-bezier(0.1, 0, 0.2, 1)', 50); }, 2000);
-    }, 3000);
-}
+        // Zostawiamy ostatni wybrany zakład podświetlony, by można było grać dalej tym samym
+        spinBtn.disabled = false;
+    }, 4000);
+});
+
+// Start gry
+setupWheel();
+buildBoard();

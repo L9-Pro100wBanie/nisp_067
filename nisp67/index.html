@@ -102,23 +102,31 @@
 </section>
     </main>
     <section id="roulette-section">
-    <h2>Studencka Ruletka Szczęścia</h2>
-    <p>Masz <span id="balance">1000</span> punktów studenta</p>
+    <h2>Studenckie Kasyno</h2>
+    <p>Masz <span id="balance">1000</span> punktów studenta[cite: 1]</p>
     
     <div class="roulette-container">
+        <!-- Koło ruletki -->
         <div id="wheel" class="wheel">
             <div class="pointer">▼</div>
             <div class="inner-wheel">?</div>
         </div>
 
-        <div class="betting-controls">
-            <input type="number" id="bet-amount" value="100" min="10">
-            <div class="color-buttons">
-                <button class="btn-red" onclick="placeBet('red')">Czerwony (x2)</button>
-                <button class="btn-black" onclick="placeBet('black')">Czarny (x2)</button>
-                <button class="btn-green" onclick="placeBet('green')">Zielony (x14)</button>
+        <!-- Panel obstawiania -->
+        <div class="betting-area">
+            <div class="controls-top">
+                <label for="bet-amount">Stawka:</label>
+                <input type="number" id="bet-amount" value="100" min="10">
+                <span id="current-selection">Nie wybrano zakładu</span>
             </div>
-            <div id="result-message">Wybierz kolor i obstaw!</div>
+
+            <!-- Zielona plansza generowana w JS -->
+            <div id="betting-board" class="betting-board">
+                <!-- Tu wpadnie siatka wygenerowana z JS -->
+            </div>
+
+            <button id="spin-btn" disabled>KRĘĆ KOŁEM!</button>
+            <div id="result-message">Wybierz pole na stole, aby zagrać!</div>
         </div>
     </div>
 </section>
@@ -137,4 +145,4 @@
     <script src="script.js"></script>
 
 </body>
-</html>
+</html>:
