@@ -73,7 +73,27 @@
             </div>
         </section>
     </main>
+    <section id="roulette-section">
+    <h2>Studencka Ruletka Szczęścia</h2>
+    <p>Masz <span id="balance">1000</span> punktów studenta</p>
+    
+    <div class="roulette-container">
+        <div id="wheel" class="wheel">
+            <div class="pointer">▼</div>
+            <div class="inner-wheel">?</div>
+        </div>
 
+        <div class="betting-controls">
+            <input type="number" id="bet-amount" value="100" min="10">
+            <div class="color-buttons">
+                <button class="btn-red" onclick="placeBet('red')">Czerwony (x2)</button>
+                <button class="btn-black" onclick="placeBet('black')">Czarny (x2)</button>
+                <button class="btn-green" onclick="placeBet('green')">Zielony (x14)</button>
+            </div>
+            <div id="result-message">Wybierz kolor i obstaw!</div>
+        </div>
+    </div>
+</section>
     <footer id="main-footer">
         <div class="footer-content">
             <p>&copy; 2026 Samorząd Studencki. Kodowanie: Giga Szef Dev.</p>
@@ -84,8 +104,9 @@
             </div>
         </div>
     </footer>
-
+    
     <!-- Twój skrypt czeka na logikę (scrolling, fetching artystów, timer?) -->
     <script src="script.js"></script>
+
 </body>
 </html>
