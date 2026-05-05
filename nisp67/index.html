@@ -1,10 +1,91 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
- <meta charset="UTF-8">
- <title>Symulacja konfliktu</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Oficjalna strona największego studenckiego święta - Juwenalia 2026">
+    <title>Juwenalia 2026 | Oficjalny Serwis</title>
+    
+    <!-- Linki do Twoich plików - zgodnie z prośbą, czekają na Twoją magię -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
- <h1>Hello World!</h1>
+
+    <!-- Nawigacja - One Page Power -->
+    <header id="main-header">
+        <nav class="navbar">
+            <div class="logo">JUWE<span>2026</span></div>
+            <ul class="nav-links">
+                <li><a href="#home">Start</a></li>
+                <li><a href="#lineup">Line-up</a></li>
+                <li><a href="#info">Informacje</a></li>
+                <li><a href="#tickets">Bilety</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="hero-content">
+                <h1>Najgłośniejsze Dni w Mieście</h1>
+                <p class="date">15-17 Maja 2026</p>
+                <a href="#tickets" class="cta-button">Zgarnij Wlotkę</a>
+            </div>
+        </section>
+
+        <!-- Line-up -->
+        <section id="lineup" class="content-section">
+            <h2>Scena Główna</h2>
+            <div class="artist-grid">
+                <!-- Tu wpadnie Twój JSowy render albo statyczny content -->
+                <article class="artist-card">
+                    <h3>Artysta Gwiazda</h3>
+                    <p>Piątek, 21:00</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- Info / FAQ -->
+        <section id="info" class="content-section info-bg">
+            <h2>Niezbędnik Studenta</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>Gdzie?</h3>
+                    <p>Kampus Główny / Tereny Zielone</p>
+                </div>
+                <div class="info-item">
+                    <h3>Bezpieczeństwo</h3>
+                    <p>Regulamin imprezy masowej dostępny przy wejściu.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bilety -->
+        <section id="tickets" class="content-section">
+            <h2>Bilety</h2>
+            <div class="pricing">
+                <div class="ticket-tier">
+                    <h3>Studencki</h3>
+                    <p class="price">49 PLN</p>
+                    <button class="buy-btn">Kup teraz</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 Samorząd Studencki. Kodowanie: Giga Szef Dev.</p>
+            <div class="socials">
+                <a href="#">IG</a>
+                <a href="#">FB</a>
+                <a href="#">TT</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Twój skrypt czeka na logikę (scrolling, fetching artystów, timer?) -->
+    <script src="script.js"></script>
 </body>
 </html>
